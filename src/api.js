@@ -3,7 +3,10 @@ const GAS_URL = import.meta.env.VITE_GAS_URL;
 async function request(payload) {
   const res = await fetch(GAS_URL, {
     method: "POST",
+    // text/plain でpreflightを回避（GASはContent-Type問わずpostData.contentsで受け取れる）
+    headers: { "Content-Type": "text/plain" },
     body: JSON.stringify(payload),
+    redirect: "follow",
   });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
@@ -11,7 +14,7 @@ async function request(payload) {
 }
 
 export async function fetchRules() {
-  const res = await fetch(GAS_URL);
+  const res = await fetch(GAS_URL, { redirect: "follow" });
   const data = await res.json();
   if (data.error) throw new Error(data.error);
   return data.rules;
