@@ -36,12 +36,26 @@ function doGet(e) {
   }
 }
 
-// POSTリクエスト: 追加・更新・トグル・削除
+// POSTリクエスト: 全取得・追加・更新・トグル・削除
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
     var action = body.action;
     var sheet = getSheet();
+
+    if (action === "get") {
+      var data = sheet.getDataRange().getValues();
+      var rules = [];
+      for (var i = 1; i < data.length; i++) {
+        rules.push({
+          id: data[i][0],
+          title: data[i][1],
+          content: data[i][2],
+          is_active: data[i][3] === true || data[i][3] === "TRUE"
+        });
+      }
+      return ok({ rules: rules });
+    }
 
     if (action === "add") {
       var id = new Date().getTime().toString();

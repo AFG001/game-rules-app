@@ -14,9 +14,7 @@ async function request(payload) {
 }
 
 export async function fetchRules() {
-  const res = await fetch(GAS_URL, { redirect: "follow" });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error);
+  const data = await request({ action: "get" });
   return data.rules;
 }
 
